@@ -8,12 +8,24 @@ from mesa.visualization import (
 from mesa.visualization.components import AgentPortrayalStyle
 
 
+from aspiradora import Aspiradora
+from basura import Basura
+
 def agent_portrayal(agent):
-    return AgentPortrayalStyle(
-        color="white" if agent.state == 0 else "black",
-        marker="s",
-        size=30,
-    )
+    # Si es Aspiradora, la dibujamos como un círculo azul
+    if isinstance(agent, Aspiradora):
+        return AgentPortrayalStyle(
+            color="blue",
+            marker="o",
+            size=50,
+        )
+    # Si es Basura, como un cuadrado gris
+    elif isinstance(agent, Basura):
+        return AgentPortrayalStyle(
+            color="grey",
+            marker="s",
+            size=20,
+        )
 
 
 def post_process(ax):
@@ -30,28 +42,44 @@ model_params = {
     },
     "width": {
         "type": "SliderInt",
-        "value": 50,
-        "label": "Width",
+        "value": 20,
+        "label": "Ancho (M)",
         "min": 5,
         "max": 60,
         "step": 1,
     },
     "height": {
         "type": "SliderInt",
-        "value": 50,
-        "label": "Height",
+        "value": 20,
+        "label": "Alto (N)",
         "min": 5,
         "max": 60,
         "step": 1,
     },
-    "initial_fraction_alive": {
-        "type": "SliderFloat",
-        "value": 0.2,
-        "label": "Cells initially alive",
-        "min": 0,
-        "max": 1,
-        "step": 0.01,
+    "num_agentes": {
+        "type": "SliderInt",
+        "value": 3,
+        "label": "Número de Agentes",
+        "min": 1,
+        "max": 50,
+        "step": 1,
     },
+    "porcentaje_basura": {
+        "type": "SliderInt",
+        "value": 40,
+        "label": "Porcentaje de Basura Inicial",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+    },
+    "tiempo_maximo": {
+        "type": "SliderInt",
+        "value": 60,
+        "label": "Tiempo maximo",
+        "min": 20,
+        "max": 600,
+        "step": 1,
+    }
 }
 
 # Create initial model instance
