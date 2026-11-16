@@ -1,31 +1,42 @@
+# Programa: implementa el comportamiento de un agente aspirador.
+# Autores: Regina Hernández Moreno - A01802688; Ricardo Oved Cornejo Castro - A01803272
+# Fecha de creacion/modificacion: 16/11/2026
+
 from mesa import Agent
 from basura import Basura
 
 
 class Aspiradora(Agent):
-    def __init__(self, unique_id, model):
+    # Inicializa el agente aspirador.
+    # Parametros: self, instancia actual; uniqueId, identificador solicitado; model, modelo al que pertenece.
+    # Retorno: None.
+    def __init__(self, uniqueId, model):
         super().__init__(model)
-        self.unique_id = unique_id
+        self.uniqueId = uniqueId
 
+    # Limpia la celda actual o mueve la aspiradora a una celda vecina disponible.
+    # Parametros: self, instancia actual.
+    # Retorno: None.
     def step(self):
-        contenido_celda = self.model.grid.get_cell_list_contents([self.pos])
-        basura_aqui = [obj for obj in contenido_celda if isinstance(obj, Basura)]
+        contenidoCelda = self.model.grid.get_cell_list_contents([self.pos])
+        basuraAqui = [obj for obj in contenidoCelda if isinstance(obj, Basura)]
 
-        if len(basura_aqui) > 0:
-            basura = basura_aqui[0]
+        if len(basuraAqui) > 0:
+            basura = basuraAqui[0]
             self.model.grid.remove_agent(basura)
             self.model.agents.remove(basura)
         else:
             vecinos = self.model.grid.get_neighborhood(self.pos, True, False)
-            vecinos_validos = []
+            vecinosValidos = []
 
             for vecino in vecinos:
-                contenido_vecino = self.model.grid.get_cell_list_contents([vecino])
-                hay_aspiradora = any(isinstance(obj, Aspiradora) for obj in contenido_vecino)
+                contenidoVecino = self.model.grid.get_cell_list_contents([vecino])
+                hayAspiradora = any(isinstance(obj, Aspiradora) for obj in contenidoVecino)
 
-                if not hay_aspiradora or vecino == (1, 1):
-                    vecinos_validos.append(vecino)
+                if not hayAspiradora or vecino == (1, 1):
+                    vecinosValidos.append(vecino)
 
-            if len(vecinos_validos) > 0:
-                nueva_posicion = self.random.choice(vecinos_validos)
-                self.model.grid.move_agent(self, nueva_posicion)
+            if len(vecinosValidos) > 0:
+                nuevaPosicion = self.random.choice(vecinosValidos)
+                self.model.grid.move_agent(self, nuevaPosicion)
+                self.model.movimientos += 1

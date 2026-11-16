@@ -1,34 +1,29 @@
-#from mesa.examples.basic.conways_game_of_life.model import ConwaysGameOfLife
+# Programa: visualiza una simulacion de agentes aspiradores y basura.
+# Autores: Regina Hernández Moreno - A01802688; Ricardo Oved Cornejo Castro - A01803272
+# Fecha de creacion/modificacion: 16/11/2026
+
 from model import AspiradoraModel
-
-from mesa.visualization import (
-    SolaraViz,
-    SpaceRenderer,
-)
+from mesa.visualization import SolaraViz, SpaceRenderer
 from mesa.visualization.components import AgentPortrayalStyle
-
-
 from aspiradora import Aspiradora
 from basura import Basura
 
-def agent_portrayal(agent):
-    # Si es Aspiradora, la dibujamos como un círculo azul
+
+# Describe la apariencia de cada tipo de agente.
+# Parametros: agent, agente cuya apariencia se va a definir.
+# Retorno: estilo visual correspondiente al tipo de agente.
+def agentPortrayal(agent):
     if isinstance(agent, Aspiradora):
-        return AgentPortrayalStyle(
-            color="blue",
-            marker="o",
-            size=50,
-        )
-    # Si es Basura, como un cuadrado gris
-    elif isinstance(agent, Basura):
-        return AgentPortrayalStyle(
-            color="grey",
-            marker="s",
-            size=20,
-        )
+        return AgentPortrayalStyle(color="blue", marker="o", size=50)
+    if isinstance(agent, Basura):
+        return AgentPortrayalStyle(color="grey", marker="s", size=20)
+    return None
 
 
-def post_process(ax):
+# Ajusta la proporcion y oculta las marcas de los ejes.
+# Parametros: ax, ejes de Matplotlib que se van a configurar.
+# Retorno: None.
+def postProcess(ax):
     ax.set_aspect("equal")
     ax.set_xticks([])
     ax.set_yticks([])
@@ -38,7 +33,7 @@ model_params = {
     "rng": {
         "type": "InputText",
         "value": 42,
-        "label": "Random Seed",
+        "label": "Semilla aleatoria",
     },
     "width": {
         "type": "SliderInt",
@@ -56,44 +51,37 @@ model_params = {
         "max": 60,
         "step": 1,
     },
-    "num_agentes": {
+    "numAgentes": {
         "type": "SliderInt",
         "value": 3,
-        "label": "Número de Agentes",
+        "label": "Numero de agentes",
         "min": 1,
         "max": 50,
         "step": 1,
     },
-    "porcentaje_basura": {
+    "porcentajeBasura": {
         "type": "SliderInt",
         "value": 40,
-        "label": "Porcentaje de Basura Inicial",
+        "label": "Porcentaje de basura inicial",
         "min": 1,
         "max": 100,
         "step": 1,
     },
-    "tiempo_maximo": {
+    "tiempoMaximo": {
         "type": "SliderInt",
         "value": 60,
         "label": "Tiempo maximo",
         "min": 20,
         "max": 600,
         "step": 1,
-    }
+    },
 }
 
-# Create initial model instance
 model1 = AspiradoraModel()
-
-renderer = SpaceRenderer(model1, backend="matplotlib").setup_agents(agent_portrayal)
+renderer = SpaceRenderer(model1, backend="matplotlib").setup_agents(agentPortrayal)
 renderer.render()
-renderer.post_process = post_process
+renderer.post_process = postProcess
 
-# Create the SolaraViz page. This will automatically create a server and display the
-# visualization elements in a web browser.
-# Display it using the following command in the example directory:
-# solara run app.py
-# It will automatically update and display any changes made to this file
 page = SolaraViz(
     model1,
     renderer,
