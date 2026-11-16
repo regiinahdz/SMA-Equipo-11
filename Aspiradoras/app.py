@@ -1,12 +1,31 @@
-# Programa: visualiza una simulacion de agentes aspiradores y basura.
+    # Programa: visualiza una simulacion de agentes aspiradores y basura.
 # Autores: Regina Hernández Moreno - A01802688; Ricardo Oved Cornejo Castro - A01803272
 # Fecha de creacion/modificacion: 16/11/2026
 
+import solara
 from model import AspiradoraModel
 from mesa.visualization import SolaraViz, SpaceRenderer
 from mesa.visualization.components import AgentPortrayalStyle
+from mesa.visualization.utils import update_counter
 from aspiradora import Aspiradora
 from basura import Basura
+
+
+# Muestra las estadisticas actuales del modelo de simulacion.
+# Parametros: model, modelo de aspiradoras del que se leen las estadisticas.
+# Retorno: componente Solara con el resumen de pasos, movimientos y celdas limpias.
+@solara.component
+def panelInformacion(model):
+    update_counter.get()
+    datos = model.obtenerEstadisticas()
+    solara.Markdown(
+        f"""
+### Informacion de la simulacion
+- Tiempo transcurrido (pasos): {datos["pasos"]}
+- Movimientos totales realizados: {datos["movimientos"]}
+- Celdas limpias: {datos["celdasLimpias"]} de {datos["totalCeldas"]} cuadros limpios
+"""
+    )
 
 
 # Describe la apariencia de cada tipo de agente.
@@ -86,6 +105,7 @@ page = SolaraViz(
     model1,
     renderer,
     model_params=model_params,
+    components=[panelInformacion],
     name="Aspiradoras",
 )
 page  # noqa

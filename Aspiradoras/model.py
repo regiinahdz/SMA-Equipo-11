@@ -86,6 +86,8 @@ class AspiradoraModel(Model):
 
         return {
             "pasos": self.paso,
-            "porcentajeCeldasLimpias": porcentajeLimpio,
             "movimientos": self.movimientos,
+            "celdasLimpias": self.totalCeldas - basuraRestante,
+            "totalCeldas": self.totalCeldas,
+            "porcentajeLimpias": porcentajeLimpio,
         }
